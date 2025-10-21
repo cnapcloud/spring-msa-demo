@@ -1,0 +1,107 @@
+plugins {
+    id "org.sonarqube" version "5.1.0.4882" // Use the latest version
+}
+
+
+def generatedDir = 'bin/generated-sources/annotations'
+
+clean.doLast {
+	file(generatedDir).deleteDir()
+}
+
+
+
+compileJava {
+    options.compilerArgs += [
+        '--enable-preview',
+        '-Amapstruct.defaultComponentModel=spring',
+        '-Amapstruct.verbose=false',
+        '-parameters'
+    ]
+    options.annotationProcessorGeneratedSourcesDirectory = file(generatedDir)
+}
+
+
+dependencies {
+   // actuator
+   implementation 'org.springframework.boot:spring-boot-starter-actuator'
+   
+   // security
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+
+    // JPA dependency
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'com.h2database:h2' // H2 Database Driver
+    
+    //querydsl    
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+    
+    // datasource proxy
+    implementation('com.github.gavlyukovskiy:datasource-proxy-spring-boot-starter:1.9.2')
+    
+    // REST dependency
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+      
+    // Add api and client project dependencies
+    implementation project(':common-service')
+    
+    // mapstruct dependencies
+    implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+    
+    // Test dependency
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testCompileOnly 'org.projectlombok:lombok:1.18.24'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+    
+    // prometheus metrics, tracing
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    implementation 'io.micrometer:micrometer-tracing-bridge-otel'
+    implementation 'io.opentelemetry:opentelemetry-exporter-otlp'
+    implementation 'io.github.openfeign:feign-micrometer'
+    
+    //swagger dependencies
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
+    
+    //flyway
+    runtimeOnly 'org.flywaydb:flyway-core'
+}
+
+
+tasks.withType(Test) {
+    useJUnitPlatform()
+}
+
+
+def profiles = project.hasProperty('production') ? 'production' : 'local'
+
+bootRun {
+  args = ["--spring.profiles.active=" + profiles]
+  mainClass = 'com.cop.project.ProjectApplication'  
+}
+
+
+jar.enabled = false
+
+// Enable the Spring Boot JAR task
+bootJar {
+    enabled = true
+    mainClass = 'com.cop.project.ProjectApplication'
+}
+
+tasks.named("publish") {
+    onlyIf {
+        false
+    }
+}
+
+
+
+

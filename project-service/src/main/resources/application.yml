@@ -1,0 +1,77 @@
+spring:
+  application.name: project	
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 600000 
+      pool-name: MyHikariCP
+      validation-timeout: 5000 
+      auto-commit: true
+  mail:
+    host: localhost
+    port: 1025
+    username: demo@kind.internal
+    password: password
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: fals
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: none
+  h2:   # http://localhost:8080/h2-console
+    console:
+      enabled: true
+  flyway:
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+server:
+  port: 8080
+  error:
+    include-stacktrace: never
+  tomcat:
+    mbeanregistry:
+      enabled: true
+  forward-headers-strategy: framework
+
+keycloak:
+  realm-url: ${KEYCLOAK_REALM_URL:https://keycloak.cnap.dev/realms/cnap}
+  client-id: ${KEYCLOAK_CLIENT_ID:msa}
+  client-secret: ${KEYCLOAK_CLIENT_ID:AqDwnz20Vid9FiaQFQ8WtcLH9D8itSPN}
+  resource-set: > 
+    /api/v1/project,
+    /api/v2/project
+   
+logging:
+  level:
+    ROOT: info
+    org.springframework: INFO
+    net.ttddyy.dsproxy.listener: DEBUG
+  pattern:
+    console: "[%d{yyyy-MM-dd HH:mm:ss}] %-5level ${PID:-} [${spring.application.name:},%X{traceId:-},%X{spanId:-}] [%8.8thread] %-40.40logger{36} : %msg%n"
+
+management:
+  metrics.tags.application: ${spring.application.name}
+  endpoints:
+    prometheus:  
+     enabled: true 	
+    web:
+      exposure:
+        include: "*"
+    health:
+      show-details: ALWAYS
+

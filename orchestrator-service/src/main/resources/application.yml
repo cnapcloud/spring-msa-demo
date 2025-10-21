@@ -1,0 +1,52 @@
+spring:
+  application.name: orchestrator
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 600000 
+      pool-name: MyHikariCP
+      validation-timeout: 5000 
+      auto-commit: true      
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+
+server:
+  port: 8080
+  error:
+    include-stacktrace: never
+  tomcat:
+    mbeanregistry:
+      enabled: true
+  forward-headers-strategy: framework
+      
+# spring.output.ansi.enabled: always
+
+logging:
+  level.ROOT: info
+  pattern:
+    console: "[%d{yyyy-MM-dd HH:mm:ss}] %-5level ${PID:-} [${spring.application.name:},%X{traceId:-},%X{spanId:-}] [%8.8thread] %-40.40logger{36} : %msg%n"
+
+management:
+  metrics.tags.application: ${spring.application.name}
+  endpoints:
+    prometheus:  
+     enabled: true 	
+    web:
+      exposure:
+        include: "*"
+    health:
+      show-details: ALWAYS
+

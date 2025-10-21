@@ -1,0 +1,11 @@
+server:
+  port: 8080
+  error:
+    include-stacktrace: never
+  shutdown:
+    graceful:
+      timeout: 30s
+
+logging:
+  level:
+    root: INFO

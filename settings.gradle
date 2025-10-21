@@ -1,0 +1,5 @@
+rootProject.name = 'spring-msa-demo'
+
+include 'common-service'
+include 'project-service'
+include 'orchestrator-service'

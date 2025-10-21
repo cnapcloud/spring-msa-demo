@@ -1,0 +1,63 @@
+
+def generatedDir = 'bin/generated-sources/annotations'
+
+clean.doLast {
+	file(generatedDir).deleteDir()
+}
+
+compileJava {
+    options.compilerArgs += [
+        '--enable-preview',
+        '-parameters'
+    ]
+    options.annotationProcessorGeneratedSourcesDirectory = file(generatedDir)
+}
+
+
+dependencies {   
+
+    // spring data
+    implementation 'org.springframework.data:spring-data-commons'
+    implementation 'org.springframework.data:spring-data-jpa'
+    implementation 'jakarta.persistence:jakarta.persistence-api'
+
+        
+    // spring security
+    implementation 'org.springframework.security:spring-security-config'
+    implementation 'org.springframework.security:spring-security-oauth2-jose'
+    implementation 'org.springframework.security:spring-security-oauth2-resource-server'
+    
+    // querydsl    
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+  
+    // spring doc
+    implementation 'org.springdoc:springdoc-openapi-starter-common:2.5.0'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'  
+            
+    // utils
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
+    implementation 'org.json:json:20240303' 
+    
+    // JUnit test dependency
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testCompileOnly 'org.projectlombok:lombok:1.18.24'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+    compileOnly 'org.projectlombok:lombok'
+    
+}
+
+jar {
+   enabled = true
+   archiveBaseName = "${project.name}"
+   version = "${project.version}"
+   archiveClassifier = ""
+ }
+
+java {
+    withSourcesJar()
+}

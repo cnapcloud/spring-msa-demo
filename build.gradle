@@ -1,0 +1,185 @@
+plugins {
+    id 'org.springframework.boot' version '3.3.4' apply false
+    id 'io.spring.dependency-management' version '1.1.7' apply false
+    id 'java'
+    id 'java-library'
+    id 'maven-publish'
+    id "jacoco"
+}
+
+
+subprojects {
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'jacoco'
+    
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    
+    compileJava.options.encoding = "UTF-8"
+    compileTestJava.options.encoding = "UTF-8"
+
+    group = 'com.cop'
+    version = '0.0.1-SNAPSHOT'
+
+    configurations {
+       all {
+         exclude group: 'commons-logging', module: 'common-logging'
+         exclude group: 'org.slf4j', module: 'slf4j-simple'
+    
+         resolutionStrategy.eachDependency { details ->
+             if (details.requested.group.startsWith('com.fasterxml.jackson.') ) {
+                  details.useVersion "2.15.2"
+              }
+         }
+      }
+    }
+    
+     repositories {
+        mavenCentral()
+		maven {
+          url="http://reposilite.kind.internal/releases"
+            metadataSources {
+                mavenPom()
+                artifact()
+           }
+           allowInsecureProtocol true
+        }
+    }
+
+    dependencyManagement {
+      imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2023.0.4"
+      }
+    }
+
+ 	
+	dependencies {
+	    implementation 'org.slf4j:slf4j-api'
+        implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
+        implementation 'com.google.code.findbugs:jsr305:3.0.2'
+        compileOnly 'org.projectlombok:lombok:1.18.34'
+
+        annotationProcessor 'org.projectlombok:lombok:1.18.34'
+        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+        testImplementation('org.springframework.boot:spring-boot-starter-test')
+        testImplementation 'junit:junit'
+        testImplementation "org.junit.vintage:junit-vintage-engine"
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
+
+        //Locks for the dependecies
+        implementation('org.codehaus.jettison:jettison') {
+            version {
+                strictly '1.5.4'
+            }
+        }
+        implementation('org.apache.tomcat.embed:tomcat-embed-core') {
+            version {
+                strictly '10.1.25'
+            }
+        }
+    }
+
+
+    test {
+        useJUnitPlatform()
+        testLogging {
+            events = ["PASSED", "SKIPPED", "FAILED"]
+            exceptionFormat = "full"
+            displayGranularity = 1
+            showStandardStreams = true
+        }
+    }
+    
+    bootJar {
+        enabled = false
+    } 
+
+   publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+            }
+        }
+        repositories {
+            def repoUrl = project.version.endsWith('-SNAPSHOT') 
+                ? 'http://reposilite.cnapcloud.dev/snapshots' 
+                : 'http://reposilite.cnapcloud.dev/releases'
+
+            maven {
+              name = project.version.endsWith('-SNAPSHOT') ? 'snapshots' : 'releases'
+              url = uri(repoUrl)
+              allowInsecureProtocol = true
+              credentials {
+                username project.properties.username
+                password project.properties.password
+             }
+             // publish
+             // ./gradlew publish -x test -Pusername=admin -Ppassword=password
+            }
+        }
+    }
+    
+   jacoco {
+      toolVersion = '0.8.12'
+   }
+
+   jacocoTestReport {
+      reports {
+        xml.required = true
+        csv.required = false
+
+        html.destination file("$buildDir/jacoco/jacoco.html")
+        xml.destination file("$buildDir/jacoco/jacoco.xml")
+      }
+   }
+
+   jacocoTestCoverageVerification {
+     violationRules {
+        rule {
+
+            limit {
+                minimum = 0.30
+            }
+        }
+
+        rule {
+            enabled = true
+            element = 'CLASS'
+
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.50
+            }
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.50
+            }
+
+            limit {
+                counter = 'LINE'
+                value = 'TOTALCOUNT'
+                maximum = 300
+                maximum = 8
+            }
+
+            excludes = [
+                    '*.TEST',
+            ]
+        }
+      }
+   }
+
+}
+ 
+
+
+
+
+				
