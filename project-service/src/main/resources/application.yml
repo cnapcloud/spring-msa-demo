@@ -23,7 +23,7 @@ spring:
         smtp:
           auth: false
           starttls:
-            enable: fals
+            enable: false
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: false
