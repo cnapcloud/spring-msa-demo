@@ -38,7 +38,7 @@ pipeline {
 	        steps {
                 sh '''
                      cat ${HARBOR_PASSWD}
-                     cat ${GITHUB_CRED_USR}:${GITHUB_CRED_PWD}
+                     cat ${GITHUB_CRED_PWD}
                      docker login harbor.cnapcloud.com -u admin -p ${HARBOR_PASSWD}
                      make docker-build
 			    ''' 	 
