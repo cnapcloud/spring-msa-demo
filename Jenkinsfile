@@ -3,6 +3,7 @@ pipeline {
 
 	environment {
        GITHUB_CRED=credentials('github-access-token')
+       HARBOR_PASSWD=credentials('harbor-password')
     }
 
 	options {
@@ -36,6 +37,7 @@ pipeline {
 	   stage('push image') {	
 	        steps {
                 sh '''
+                     docker login harbor.cnapcloud.com -u admin -p ${HARBOR_PASSWD}
                      make docker-build
 			    ''' 	 
 	  	    }
