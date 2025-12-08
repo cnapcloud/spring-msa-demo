@@ -1,4 +1,4 @@
-IMAGE_ORG := cnapcloud
+IMAGE_ORG := harbor.cnapcloud.com/library
 IMAGE_REPOSITORY := ${IMAGE_ORG}/spring-msa-demo
 IMAGE_TAG := $(shell git rev-parse --short=7 HEAD)
 
