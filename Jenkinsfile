@@ -37,8 +37,6 @@ pipeline {
 	   stage('push image') {	
 	        steps {
                 sh '''
-                     cat ${HARBOR_PASSWD}
-                     cat ${GITHUB_CRED_PWD}
                      docker login harbor.cnapcloud.com -u admin -p ${HARBOR_PASSWD}
                      make docker-build
 			    ''' 	 
