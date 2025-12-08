@@ -23,7 +23,19 @@ pipeline {
 				'''
 			}	
         }
-		
+
+
+	    stage('update-overlay') {	
+		    steps {
+                sh '''
+			       git clone https://github.com/cnapcloud/gitops-demo.git
+                   cd gitops-demo
+                   ls -al
+			    ''' 	 
+	   	   }
+	    }
+
+
 
 		stage("build") {
 			steps {
@@ -43,18 +55,6 @@ pipeline {
 	  	    }
 	    }
 	    
-	    stage('update-overlay') {	
-	        when {
-                expression {
-                    return  env.BRANCH_NAME == 'main'
-                }
-            }
-		    steps {
-                sh '''
-			       make update-overlay
-			    ''' 	 
-	   	   }
-	    }
 
 	}	
 
