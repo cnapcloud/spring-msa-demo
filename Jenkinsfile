@@ -2,7 +2,7 @@ pipeline {
     agent { label 'build' }
 
 	environment {
-       GITHUB_CRED=credentials('github-access-token')
+       GITHUB_TOKEN=credentials('github-personal-token')
        HARBOR_PASSWD=credentials('harbor-password')
     }
 
@@ -19,7 +19,7 @@ pipeline {
                    ### git user info !! important to reuse pod. 
                    git config --global user.email "mirinus@gmail.com"
                    git config --global user.name "cj kim"
-				   git config --global url.https://${GITHUB_CRED_USR}:${GITHUB_CRED_PWD}@github.com/cnapcloud/.insteadOf https://github.com/cnapcloud/
+				   git config --global url.https://${GITHUB_TOKEN}@github.com/cnapcloud/.insteadOf https://github.com/cnapcloud/
 				'''
 			}	
         }
