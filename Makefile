@@ -5,7 +5,7 @@ IMAGE_REPOSITORY := ${IMAGE_ORG}/spring-msa-demo
 IMAGE_TAG := $(shell git rev-parse --short=7 HEAD)
 
 # Gitops vairables
-GITOPS_REPO := http://github.com/cnapcloud/gitops.git
+GITOPS_REPO := https://github.com/cnapcloud/gitops.git
 GITOPS_PATH := tmp/gitops
 GIT_BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD)
 
