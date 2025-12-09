@@ -19,7 +19,7 @@ pipeline {
                    ### git user info !! important to reuse pod. 
                    git config --global user.email "mirinus@gmail.com"
                    git config --global user.name "cj kim"
-				   git config --global url.https://${GITHUB_TOKEN}@github.com/cnapcloud/.insteadOf https://github.com/cnapcloud/
+				   git config --global url.https://mirinus:${GITHUB_TOKEN}@github.com/cnapcloud/.insteadOf https://github.com/cnapcloud/
 				'''
 			}	
         }
