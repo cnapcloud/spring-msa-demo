@@ -2,7 +2,7 @@ pipeline {
     agent { label 'build' }
 
 	environment {
-       GITHUB_TOKEN=credentials('github-personal-token')
+       GITHUB_TOKEN=credentials('github-personal-access-token')
        HARBOR_PASSWD=credentials('harbor-password')
     }
 
