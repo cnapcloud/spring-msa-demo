@@ -51,7 +51,7 @@ server:
 keycloak:
   realm-url: ${KEYCLOAK_REALM_URL:https://keycloak.cnap.dev/realms/cnap}
   client-id: ${KEYCLOAK_CLIENT_ID:msa}
-  client-secret: ${KEYCLOAK_CLIENT_ID:AqDwnz20Vid9FiaQFQ8WtcLH9D8itSPN}
+  client-secret: ${KEYCLOAK_CLIENT_SECRET:AqDwnz20Vid9FiaQFQ8WtcLH9D8itSPN}
   resource-set: > 
     /api/v1/project,
     /api/v2/project

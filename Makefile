@@ -1,6 +1,14 @@
+
+# Docker image variables
 IMAGE_ORG := harbor.cnapcloud.com/library
 IMAGE_REPOSITORY := ${IMAGE_ORG}/spring-msa-demo
 IMAGE_TAG := $(shell git rev-parse --short=7 HEAD)
+
+# Gitops vairables
+GITOPS_REPO := http://github.com/cnapcloud/gitops.git
+GITOPS_PATH := tmp/gitops
+GIT_BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD)
+
 
 help:
 	@echo "Available targets:"; awk '/^[a-zA-Z0-9_-]+:/ {t=$$1; sub(/:$$/, "", t); \
@@ -34,6 +42,13 @@ docker-build:
 	--local dockerfile=. \
 	--output type=image,name=$(IMAGE_REPOSITORY):$(IMAGE_TAG),push=true
 	
+update-tag:
+	@echo "[update-tag] Update the image tag in GitOps repo."
+	update-tag.sh \
+	--repo $(GITOPS_REPO) \
+	--branch main \
+	--image $(IMAGE_REPOSITORY):$(IMAGE_TAG)
+
 clean:
 	@echo "[clean] Clean up Docker builder cache."
 	buildctl --addr tcp://buildkitd.cicd.svc:1234 prune --all --force
