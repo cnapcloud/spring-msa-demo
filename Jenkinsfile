@@ -40,6 +40,14 @@ pipeline {
 			    ''' 	 
 	  	    }
 	    }
+
+        stage('update gitops') {
+            steps {
+                sh '''
+                    make update-tag
+                 '''         
+            }
+        }
 	    
 
 	}	
