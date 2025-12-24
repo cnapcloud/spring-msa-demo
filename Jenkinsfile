@@ -28,8 +28,8 @@ pipeline {
 	        steps {
                 sh '''
 					 docker login harbor.cnapcloud.com -u admin -p password
-					 cat ${HARBOR_PASSWD}
-                     docker login harbor.cnapcloud.com -u admin -p ${HARBOR_PASSWD}
+					echo "HARBOR_PASSWD 길이: ${#HARBOR_PASSWD}"
+                     echo  ${HARBOR_PASSWD} | docker login harbor.cnapcloud.com -u admin -p 
 			    ''' 	 
 	  	    }
 	    }
