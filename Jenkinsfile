@@ -23,16 +23,6 @@ pipeline {
 				'''
 			}	
         }
-
-	   stage('echo harbor login') {	
-	        steps {
-                sh '''
-					 docker login harbor.cnapcloud.com -u admin -p password
-					echo "HARBOR_PASSWD 길이: ${#HARBOR_PASSWD}"
-                     echo  ${HARBOR_PASSWD} | docker login harbor.cnapcloud.com -u admin -p 
-			    ''' 	 
-	  	    }
-	    }
 		
 		stage("build") {
 			steps {
