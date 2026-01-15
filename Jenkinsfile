@@ -23,7 +23,7 @@ pipeline {
 				'''
 			}	
         }
-
+		
 		stage("build") {
 			steps {
 			   sh '''
