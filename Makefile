@@ -1,6 +1,13 @@
-IMAGE_ORG := cnapcloud
+
+# Docker image variables
+IMAGE_ORG := harbor.cnapcloud.com/library
 IMAGE_REPOSITORY := ${IMAGE_ORG}/spring-msa-demo
 IMAGE_TAG := $(shell git rev-parse --short=7 HEAD)
+
+# Gitops vairables
+GITOPS_REPO := https://github.com/cnapcloud/gitops.git
+GITOPS_PATH := tmp/gitops
+GIT_BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD)
 
 
 help:
@@ -29,27 +36,21 @@ run-orchestrator:
 		
 docker-build:
 	@echo "[docker-build] Build the Docker image"
-	docker build --no-cache --load -t $(IMAGE_REPOSITORY):$(IMAGE_TAG) .
-	docker tag $(IMAGE_REPOSITORY):$(IMAGE_TAG) $(IMAGE_REPOSITORY):latest
-	make clean
+	buildctl --addr tcp://buildkitd.cicd.svc:1234 build \
+	--frontend dockerfile.v0 \
+	--local context=. \
+	--local dockerfile=. \
+	--output type=image,name=$(IMAGE_REPOSITORY):$(IMAGE_TAG),push=true
 	
-	
-docker-build-mutiplatform:
-	@echo "[docker-build] Build the Docker for arm64, amd64"
-	docker buildx build \
-		--platform linux/amd64,linux/arm64 \
-		--no-cache \
-		--push \
-		-t $(IMAGE_REPOSITORY):$(IMAGE_TAG) \
-		-t $(IMAGE_REPOSITORY):latest .
-	make clean	
-
-docker-push:
-	@echo "[docker-push] Push the Docker image."
-	docker push $(IMAGE_REPOSITORY):$(IMAGE_TAG)
+update-tag:
+	@echo "[update-tag] Update the image tag in GitOps repo."
+	update-tag.sh \
+	--repo $(GITOPS_REPO) \
+	--branch main \
+	--image $(IMAGE_REPOSITORY):$(IMAGE_TAG)
 
 clean:
 	@echo "[clean] Clean up Docker builder cache."
-	yes| docker builder prune
+	buildctl --addr tcp://buildkitd.cicd.svc:1234 prune --all --force
 
 .PHONY: help build report run-project run-orchestrator docker-build docker-push clean

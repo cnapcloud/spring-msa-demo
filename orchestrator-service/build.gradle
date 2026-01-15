@@ -40,6 +40,12 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 
+    // prometheus metrics, tracing
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    implementation 'io.micrometer:micrometer-tracing-bridge-otel'
+    implementation 'io.opentelemetry:opentelemetry-exporter-otlp'
+    implementation 'io.github.openfeign:feign-micrometer'
+
     //swagger dependencies
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'    
 }
