@@ -27,9 +27,6 @@ pipeline {
 		stage("build") {
 			steps {
 			   sh '''
-				echo "=== Harbor Credentials ==="
-				echo "Harbor Password: ${HARBOR_PASSWD}"
-				echo "=========================="
                   make build
                 '''        			       			
 		    }
